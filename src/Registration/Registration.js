@@ -111,25 +111,26 @@ const handlesubmit = (values)=> {
                         <form >
                       <div className="row">
                         <div className="col text-left">
-                          <label htmlFor="first" className="form-label">
+                          <label htmlFor="nome" className="form-label">
                             Nome
                           </label>
                           <input
-                            id="first"
-                            name="first"
+                            id="nome"
+                            name="nome"
                             className="form-control"
                             value= {firstName}
                             onChange={(e) => setFirstName(e.target.value)}
                             />
                         </div>
                         <div className="col text-left">
-                          <label htmlFor="last`" className="form-label">
+                          <label htmlFor="sobrenome`" className="form-label">
                             Sobrenome
                           </label>
                           <input
-                            id="last"
-                            name="last"
+                            id="sobrenome"
+                            name="sobrenome"
                             className="form-control"
+                            onChange={(e) => setLastName(e.target.value)}
                             value={lastName}
                             />
                         </div>
