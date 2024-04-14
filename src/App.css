@@ -28,3 +28,44 @@
     transform: rotate(360deg);
   }
 }
+
+.text-center{
+  color: rgb(206, 200, 192)!important;
+}
+
+::placeholder{
+  color: rgb(206, 200, 192)!important;
+}
+
+
+/* Adicione essas classes ao seu arquivo Registration.css */
+
+/* Animação de saída da tela */
+.slide-out {
+  animation: slideOut 0.5s forwards;
+}
+
+/* Animação de entrada da tela */
+.slide-in {
+  animation: slideIn 0.5s forwards;
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+  }
+}
