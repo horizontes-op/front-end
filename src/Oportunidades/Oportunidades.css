@@ -1,0 +1,50 @@
+.oportunidade-card{
+    margin-bottom: 20px;
+    min-height: 230px;
+}
+.oportunidade-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    transition: all 0.3s ease-in-out;
+    height: 100%; 
+}
+
+.oportunidade-card:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.oportunidade-card-body {
+    padding: 10px; /* Adicionando padding aos lados do corpo do card */
+    background-color: #f9f9f9;
+ /* Definindo uma altura fixa para o corpo do card */
+    overflow: auto; /* Adicionando overflow para lidar com o texto que ultrapassa a altura */
+}
+
+.card-content {
+    max-height: calc(100% - 40px); /* Definindo a altura máxima do conteúdo do card para acomodar o botão */
+    overflow: auto; /* Adicionando overflow para lidar com o texto que ultrapassa a altura */
+}
+
+.oportunidade-card .card-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.oportunidade-card .card-text {
+    margin-bottom: 10px;
+    
+}
+.oportunidade-card:hover {
+    transform: scale(1.06); 
+    cursor: pointer;
+
+
+}
+.logo-img {
+    max-width: 150px; /* Defina o tamanho máximo que você deseja para a imagem */
+    height: auto; /* Isso permite que a altura da imagem seja ajustada automaticamente para manter a proporção */
+    margin-bottom: 20px; /* Adicione margem inferior para separar a imagem do conteúdo abaixo */
+    justify-content: flex-end;
+    padding: 0;
+    margin: 0;
+}

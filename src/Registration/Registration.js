@@ -1,5 +1,6 @@
 import React from "react";
-import { useFormik } from "formik";
+
+import { useFormik } from "formik"; 
 import "./Registration.css";
 import {useState} from 'react'
 import { Button } from "react-bootstrap";
@@ -9,7 +10,7 @@ import Select2 from "../components/Select";
 
 
 // primeira tela
-const Registration = () => {
+const Registration = (props) => {
 const [nome, setNome] = useState("")
 const [sobrenome, setSobrenome] = useState("")
 const [email, setEmail] = useState("")
@@ -78,56 +79,75 @@ const [pag3, setPag3] = useState(false)
 
 
 const handlesubmit = (values)=> {
-  alert(
-    "Form is valid now!. You can make a call to API inside onSubmit function"
-  );
+  props.setPreencheuFormulario(true)
+  console.log({
+    body: JSON.stringify({
+      nome: nome + " " + sobrenome,
+      email: email,
+      genero: generoSelected.value  ,
+      cep: cep,
+      escolaridade: escolaridadeSelected.value,
+      tipo_escola:  estudaEstudouSelected.value,
+      ocupacao: ocupacao,
+      renda_per_capita: renda_per_capita,
+      modalidade: modalidadeSelected.value,
+      disponibilidade: disponibilidadeSelected.map((item) => item.value),
+      turno_disponivel: turnoDisponivelSelected.value,
+      estudaEstudou: estudaEstudouSelected.value,
+      oportunidade: buscaOportunidadeSelected.map((item) => item.value),
+      area_interesse: area_interesse,
+      descricao: descricao,
+      dataNascimento: data_nascimento
+
+    })
+  })
+
   // action.resetForm();
-  fetch('http://localhost:8080/aluno', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    // body: JSON.stringify({
-    //   nome: nome + " " + sobrenome,
-    //   email: email,
-    //   genero: genero,
-    //   cep: cep,
-    //   escolaridade: escolaridade,
-    //   tipo_escola: tipoEscola,
-    //   ocupacao: ocupacao,
-    //   renda_per_capita: renda_per_capita,
-    //   modalidade: modalidade,
-    //   distancia_km: distancia_km,
-    //   oportunidade: oportunidade,
-    //   area_interesse: area_interesse,
-    //   descricao: descricao,
-    //   dataNascimento: data_nascimento
-    // })
+  // fetch('http://localhost:8080/aluno', {
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json'
+  //   },
+  //   body: JSON.stringify({
+  //     nome: nome + " " + sobrenome,
+  //     email: email,
+  //     genero: genero,
+  //     cep: cep,
+  //     escolaridade: escolaridade,
+  //     tipo_escola:  estudaEstudou,
+  //     ocupacao: ocupacao,
+  //     renda_per_capita: renda_per_capita,
+  //     modalidade: modalidade,
+      
+  //     oportunidade: buscaOportunidade,
+  //     area_interesse: area_interesse,
+  //     descricao: descricao,
+  //     dataNascimento: data_nascimento
+  //   })
   
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log(data)
-  })
+  // })
+  // .then(response => response.json())
+  // .then(data => {
+  //   console.log(data)
+  // })
 }
 
   return (
     <div>
       <section
-        class="p-5 w-100"
+        class="p-3 w-100"
         style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
       >
+        
         <div class="row">
           <div class="col-12">
             <div class="card text-black" style={{ borderRadius: "25px" }}>
               <div class="card-body p-md-5">
                 <div class="row justify-content-center">
                   <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-                    
                     {
                       !pag2 && !pag3 && (
                         <>
-                      
                         <p class="text-center h3  mb-3 mt-4">Queremos te conhecer melhor...</p>
                         <form >
                       <div className="row">
@@ -328,6 +348,14 @@ const handlesubmit = (values)=> {
                           <Select2 placeholder="Selecione uma opção" isMulti={false}  linesSelected ={turnoDisponivelSelected} 
                           handleChangeLineSelect={handleTurnoDisponivelSelect} lines ={turnoDisponivel} ></Select2> 
                         </div>
+                        <div className="col text-left">
+                          <label htmlFor="modalidade`" className="form-label">
+                           Modalidade
+                          </label>
+                            <Select2 placeholder="Selecione uma opção" linesSelected={modalidadeSelected}
+                             handleChangeLineSelect={handleModalidadeSelect} 
+                             lines ={modalidade} isMulti = {false} ></Select2>
+                        </div>
                       </div>
                       <div className="col text-left">
                           <label htmlFor="disponibilidade" className="form-label">
@@ -338,21 +366,14 @@ const handlesubmit = (values)=> {
                              lines ={disponibilidade} isMulti = {true} ></Select2>
                         </div>
                       <div className="row mt-3">
-                        <div className="col text-left">
-                          <label htmlFor="modalidade`" className="form-label">
-                           Modalidade
-                          </label>
-                            <Select2 placeholder="Selecione uma opção" linesSelected={modalidadeSelected}
-                             handleChangeLineSelect={handleModalidadeSelect} 
-                             lines ={modalidade} isMulti = {false} ></Select2>
-                        </div>
+                       
                         <div className="col text-left">
                           <label htmlFor="busca_oportunidade`" className="form-label">
                            Busco uma oportunidade...
                           </label>
                             <Select2 placeholder="Selecione uma opção" linesSelected={buscaOportunidadeSelected}
                              handleChangeLineSelect={handleBuscaOportunidadeSelect} 
-                             lines ={buscaOportunidade} isMulti = {false} ></Select2>
+                             lines ={buscaOportunidade} isMulti = {true} ></Select2>
                         </div>
                      </div>
                       <div className="row mt-3">
