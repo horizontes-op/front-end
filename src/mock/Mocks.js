@@ -125,3 +125,5 @@ const Mocks = () => {
       return dados;
        
 }
+
+export default Mocks;

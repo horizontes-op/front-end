@@ -1,452 +1,493 @@
-import React from "react";
-
-import { useFormik } from "formik"; 
+import React, { useEffect, useState } from "react";
+import { navigate, useNavigate } from 'react-router-dom';
 import "./Registration.css";
-import {useState} from 'react'
-import { Button } from "react-bootstrap";
-// import { registrationSchema } from "./RegistrationSchema";
+import image from '../images/logo.png'
 import Select2 from "../components/Select";
+import Oportunidades from "../Oportunidades/Oportunidades";
+import LoadingSpinner from "../components/LoadingSpinner";
+import  logo from '../images/logo.png'
+import host from "../constantes"
+import {apialuno, api_recomendacao} from "../constantes"
 
-
-
-// primeira tela
 const Registration = (props) => {
-const [nome, setNome] = useState("")
-const [sobrenome, setSobrenome] = useState("")
-const [email, setEmail] = useState("")
-const [genero, setGenero] = useState(["Masculino", "Feminino", "Outro"])
-const [data_nascimento, setDataNascimento] = useState("")
-const [renda_per_capita, setRenda_per_capita] = useState("")
-const [generoSelected, setGeneroSelected] = useState([])
-
-
-// segunda tela
-const [cep, setCep] = useState("")
-const [escolaridade, setEscolaridade] = useState(["Nono ano", "1º Ano E.M", "2º Ano E.M", "3º Ano E.M", "Supletivo", "Ensino técnico"])
-const [ocupacao, setOcupacao] = useState("")
-const [estudaEstudou, setEstudaEstudou] = useState(["Escola pública", "Escola privada com bolsa", "Escola privada sem bolsa"])
-const [escolaridadeSelected, setEscolaridadeSelected] = useState([])
-const [estudaEstudouSelected, setEstudaEstudouSelected] = useState([])
-
-// terceira tela
-
-
-const [modalidade, setModalidade] = useState(["Presencial", "Remoto", "Híbrido"])
-const [area_interesse, setArea_interesse] = useState("")
-const [buscaOportunidade, setBuscaOportunidade] = useState(["Acadêmica", "Trabalho", "Extra curricular"])
-const [descricao, setDescricao] = useState("")
-const [turnoDisponivel, setTurnoDisponivel] = useState(["Manhã", "Tarde", "Noite"]);
-const [disponibilidade, setDisponibilidade] = useState(["Mesma cidade", "Mesmo estado", "Outro estado", "Mesmo país", "Outro país"]);
-const [disponibilidadeSelected, setDisponibilidadeSelected] = useState([]);
-const [turnoDisponivelSelected, setTurnoDisponivelSelected] = useState([]);
-const [buscaOportunidadeSelected, setBuscaOportunidadeSelected] = useState([]);
-const [modalidadeSelected, setModalidadeSelected] = useState([])
-
-
-
-
-
-const handleBuscaOportunidadeSelect = (selectedOption) => {
-  setBuscaOportunidadeSelected(selectedOption);
-};
-const handleTurnoDisponivelSelect = (selectedOption) => {
-  setTurnoDisponivelSelected(selectedOption);
-};
-const handleGeneroSelect = (selectedOption) => {
-  setGeneroSelected(selectedOption);
-};
-
-const  handleEscolaridadeSelect = (selectedOption) => {
-  setEscolaridadeSelected(selectedOption);
-};
-const  handleModalidadeSelect = (selectedOption) => {
-  setModalidadeSelected(selectedOption);
-};
-
-const  handleEstudaEstudouSelect = (selectedOption) => {
-  setEstudaEstudouSelected(selectedOption);
-};
-const handleDescricao = (selectedOption) => {
-  setDescricao(selectedOption);
-};
-const handleDisponibilidadeSelect = (selectedOption) => {
-  setDisponibilidadeSelected(selectedOption);
-};
-
-
-const [pag2, setPag2] = useState(false)
-const [pag3, setPag3] = useState(false)
-
-
-const handlesubmit = (values)=> {
-  props.setPreencheuFormulario(true)
-  console.log({
-    body: JSON.stringify({
-      nome: nome + " " + sobrenome,
-      email: email,
-      genero: generoSelected.value  ,
-      cep: cep,
-      escolaridade: escolaridadeSelected.value,
-      tipo_escola:  estudaEstudouSelected.value,
-      ocupacao: ocupacao,
-      renda_per_capita: renda_per_capita,
-      modalidade: modalidadeSelected.value,
-      disponibilidade: disponibilidadeSelected.map((item) => item.value),
-      turno_disponivel: turnoDisponivelSelected.value,
-      estudaEstudou: estudaEstudouSelected.value,
-      oportunidade: buscaOportunidadeSelected.map((item) => item.value),
-      area_interesse: area_interesse,
-      descricao: descricao,
-      dataNascimento: data_nascimento
-
-    })
-  })
-
-  // action.resetForm();
-  // fetch('http://localhost:8080/aluno', {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json'
-  //   },
-  //   body: JSON.stringify({
-  //     nome: nome + " " + sobrenome,
-  //     email: email,
-  //     genero: genero,
-  //     cep: cep,
-  //     escolaridade: escolaridade,
-  //     tipo_escola:  estudaEstudou,
-  //     ocupacao: ocupacao,
-  //     renda_per_capita: renda_per_capita,
-  //     modalidade: modalidade,
-      
-  //     oportunidade: buscaOportunidade,
-  //     area_interesse: area_interesse,
-  //     descricao: descricao,
-  //     dataNascimento: data_nascimento
-  //   })
   
-  // })
-  // .then(response => response.json())
-  // .then(data => {
-  //   console.log(data)
-  // })
-}
+  const navigate = useNavigate()
+  const [nome, setNome] = useState("")
+  const [sobrenome, setSobrenome] = useState("")
+  const [email, setEmail] = useState("")
+  const [genero, setGenero] = useState(["Masculino", "Feminino", "Outro"])
+  const [data_nascimento, setDataNascimento] = useState("")
+  const [renda_per_capita, setRenda_per_capita] = useState("")
+  const [generoSelected, setGeneroSelected] = useState([])
 
+
+  // segunda tela
+  const [cep, setCep] = useState("")
+  const [escolaridade, setEscolaridade] = useState(["Nono ano", "1º Ano E.M", "2º Ano E.M", "3º Ano E.M", "Supletivo", "Ensino técnico"])
+  const [ocupacao, setOcupacao] = useState("")
+  const [estudaEstudou, setEstudaEstudou] = useState(["Escola pública", "Escola privada com bolsa", "Escola privada sem bolsa"])
+  const [escolaridadeSelected, setEscolaridadeSelected] = useState([])
+  const [estudaEstudouSelected, setEstudaEstudouSelected] = useState([])
+  const [matches, setMatches] = useState([])
+  // terceira tela
+  console.log(estudaEstudouSelected.value)
+
+  const validadorDeCampo = (campo) => {
+    if (campo === "") {
+      return false
+    }
+    return true
+  }
+  function validarCEP(cep) {
+    return /^[0-9]{5}[0-9]{3}$/.test(cep);
+  }
+  
+  const [modalidade, setModalidade] = useState(["Presencial", "Remoto", "Híbrido"])
+  const [area_interesse, setArea_interesse] = useState("")
+  const [buscaOportunidade, setBuscaOportunidade] = useState(["Acadêmica",  "Extra curricular"])
+  const [descricao, setDescricao] = useState("")
+  const [turnoDisponivel, setTurnoDisponivel] = useState(["Manhã", "Tarde", "Noite"]);
+  const [disponibilidade, setDisponibilidade] = useState(["Na mesma cidade", "No mesmo estado", "Em outro estado", "No mesmo país", "Em outro país"]);
+  const [disponibilidadeSelected, setDisponibilidadeSelected] = useState([]);
+  const [turnoDisponivelSelected, setTurnoDisponivelSelected] = useState([]);
+  const [buscaOportunidadeSelected, setBuscaOportunidadeSelected] = useState([]);
+  const [modalidadeSelected, setModalidadeSelected] = useState([])
+  const handleBuscaOportunidadeSelect = (selectedOption) => {
+    setBuscaOportunidadeSelected(selectedOption);
+  };
+  const handleTurnoDisponivelSelect = (selectedOption) => {
+    setTurnoDisponivelSelected(selectedOption);
+  };
+  const handleGeneroSelect = (selectedOption) => {
+    setGeneroSelected(selectedOption);
+  };
+
+  const  handleEscolaridadeSelect = (selectedOption) => {
+    setEscolaridadeSelected(selectedOption);
+  };
+  const  handleModalidadeSelect = (selectedOption) => {
+    setModalidadeSelected(selectedOption);
+  };
+
+  const  handleEstudaEstudouSelect = (selectedOption) => {
+    setEstudaEstudouSelected(selectedOption);
+  };
+  const handleDescricao = (selectedOption) => {
+    setDescricao(selectedOption);
+  };
+  const handleDisponibilidadeSelect = (selectedOption) => {
+    setDisponibilidadeSelected(selectedOption);
+  };
+  console.log(turnoDisponivelSelected)
+  
+  const [recomendacao, setRecomendacao] = useState(false)
+  const [id_usuario, setId_usuario] = useState([])
+
+    const [data, setData] = useState([])
+    const handlesubmitForm = (event) => {
+      event.preventDefault()
+      setPag3(false)
+      setRecomendacao(true)
+      
+     
+    
+    fetch(apialuno + '/aluno', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nome: nome.toString(),
+        sobrenome: sobrenome.toString(),
+        email: email.toString(),
+        genero: generoSelected.value.toString(),
+        dataNascimento: data_nascimento.toString(),
+        renda_per_capita: renda_per_capita,
+        cep: cep.toString(),
+        "escolaridade": escolaridadeSelected.value.toString(),
+        "disponibilidade_de_deslocamento": disponibilidadeSelected.map(e => e.value).toString(),
+        "estudaEm": estudaEstudou,
+        "turno_disponivel": turnoDisponivelSelected.map(e => e.value).toString(),
+        "ocupacao": ocupacao.toString(),
+       
+       "areas_interesse":   area_interesse.toString(),
+        "modalidade_do_ensino": modalidadeSelected.map(e=> e.value).toString(),
+        "tipo_de_oportunidade": buscaOportunidadeSelected.map(e => e.value).toString(),
+       
+       
+     
+        descricao: descricao.toString()})
+    })
+    
+    .then(response => response.json())
+    .then(data => {
+        // pausa de 2 segundos para simular a busca
+        const id_aluno = data['id']
+        props.setId_usuario(id_aluno)
+        fetch(api_recomendacao + '/search',{
+          method: 'POST',
+          body: JSON.stringify({
+            "id_aluno": id_aluno
+          }),
+          headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+
+          
+            // props.setMatches(data['text'])
+            // // window.location.href = "/oportunidades"
+            // // setTimeout(() => {
+            // //    setRecomendacao(true)},2000)
+
+            // setTimeout(() => {
+            //   window.location.href = "/oportunidades"
+            // },2000)
+            props.setMatches(data['text']);
+            navigate('/oportunidades')
+      
+            
+       })
+       
+    })
+   }
+  
+  const [pag2, setPag2] = useState(false)
+  const [pag3, setPag3] = useState(false)
+  const [pag1, setPag1] = useState(true)
+  useEffect(() => {
+    const confirmUnload = (e) => {
+        e.preventDefault();
+        e.returnValue = 'Se você recarregar, perderá as informações preenchidas'; // Mensagem opcional, alguns navegadores não suportam.
+    };
+
+    window.addEventListener('beforeunload', confirmUnload);
+
+    return () => window.removeEventListener('beforeunload', confirmUnload);
+}, []);
   return (
-    <div>
-      <section
-        class="p-3 w-100"
-        style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
-      >
+      <>
+
+      {/* {
+        !pag2 && !pag3 && !pag1 && !recomendacao && (
+          <LoadingSpinner mensagem = "Aguarde enquanto fazemos o match..." ></LoadingSpinner>
+        )
+      } */}
+      {/* {
+        recomendacao && matches.length  && (
         
-        <div class="row">
-          <div class="col-12">
-            <div class="card text-black" style={{ borderRadius: "25px" }}>
-              <div class="card-body p-md-5">
-                <div class="row justify-content-center">
-                  <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-                    {
-                      !pag2 && !pag3 && (
-                        <>
-                        <p class="text-center h3  mb-3 mt-4">Queremos te conhecer melhor...</p>
-                        <form >
-                      <div className="row">
-                        <div className="col text-left">
-                          <label htmlFor="nome" className="form-label">
-                            Nome
-                          </label>
-                          <input
-                            id="nome"
-                            name="nome"
-                            className="form-control"
-                            value= {nome}
-                            onChange={(e) => setNome(e.target.value)}
-                            />
-                        </div>
-                        <div className="col text-left">
-                          <label htmlFor="sobrenome`" className="form-label">
-                            Sobrenome
-                          </label>
-                          <input
-                            id="sobrenome"
-                            name="sobrenome"
-                            className="form-control"
-                            onChange={(e) => setSobrenome(e.target.value)}
-                            value={sobrenome}
-                            />
-                        </div>
-                      </div>
-                      <div className="row mt-3">
-                        <div className="col text-left">
-                          <label htmlFor="email" className="form-label">
-                            Email
-                          </label>
-                          <input
-                            id="email"
-                            name="email"
-                            className="form-control"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </div>
-                      </div>
-                      <div className="row mt-3">
-                        <div className="col text-left">
-                          <label htmlFor="genero" className="form-label">
-                            Gênero
-                          </label>
-                          <Select2 placeholder="Selecione um gênero" isMulti={false} lines = {genero} handleChangeLineSelect = {handleGeneroSelect}  linesSelected ={generoSelected }></Select2>
-                        </div>
-                      </div>
-                      <div className="row mt-3">
-                        <div className="col text-left">
-                          <label htmlFor="data_nascimento" className="form-label">
-                            Data de nascimento
-                          </label>
-                          <input
-                            id="data_nascimento"
-                            value={data_nascimento}
-                            name="data_nascimento"
-                            className="form-control"
-                            onChange={(e) => setDataNascimento(e.target.value)}
-                            type="date"
-                          />
-                          
-                        </div>
-                      </div>
-                      <div className="row mt-3">
-                        <div className="col text-left">
-                          <label htmlFor="renda_per_capita" className="form-label">
-                            Renda per capita
-                          </label>
-                          <input
-                            id="renda_per_capita"
-                            value={renda_per_capita}
-                            name="renda_per_capita"
-                            className="form-control"
-                            onChange={(e) => setRenda_per_capita(e.target.value)}
-                            type="number"
-                          />
-                          
-                        </div>
-                        <div className="col text-left">
-                          <label htmlFor="cep" className="form-label">
-                            Seu cep
-                          </label>
-                          <input
-                            placeholder="Ex: 04086002"
-                            id="cep"
-                            value={cep}
-                            name="cep"
-                            className="form-control"
-                            onChange={(e) => setCep(e.target.value)}
-                            />
-                        </div>
-                      </div>
-                      
-                      <div className="row mt-3">
-                        <div className="col text-right actionButtons">
-                          
-
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            onClick={() => setPag2(true)}
-                          >
-                            Proximo
-                          </Button>
-                        </div>
-                      </div>
-                      
-                    </form>
-                    </>  )
-                    }
-
-
-                    {
-                        pag2 && (
-                          <>
-                           
-                          <p class="text-center h3  mb-3 mt-4">Sua escolaridade...</p>
-                          <form >
-                      
-                      <div className="row">
-                        
-                        <div className="col text-left">
-                          <label htmlFor="escolaridade`" className="form-label">
-                            Escolaridade
-                          </label>
-                          <Select2 placeholder="Selecione uma opção" isMulti={false}  linesSelected ={escolaridadeSelected} handleChangeLineSelect ={handleEscolaridadeSelect } lines ={escolaridade} ></Select2>
-                          
-                        </div>
-                      </div>
-                      <div className="row mt-3">
-                        <div className="col text-left">
-                          <label htmlFor="ocupacao" className="form-label">
-                            Ocupação atualmente
-                          </label>
-                          <input
-                            id="ocupacao"
-                            name="ocupacao"
-                            value={ocupacao}
-                            className="form-control"
-                            onChange={(e) => setOcupacao(e.target.value)}
-                            placeholder="Ex: Estudante, Menor aprendiz, estagiário na área de TI, etc."
-                            type="ocupacao"
-                          />
-                          
-                        </div>
-                      
-                      </div>
-                      <div className="col text-left">
-                          <label htmlFor="estuda_estudou" className="form-label">
-                            Estuda/estudou
-                          </label>
-                          <Select2 placeholder="Selecione uma opção" isMulti={false}  linesSelected ={estudaEstudouSelected} handleChangeLineSelect ={handleEstudaEstudouSelect} lines ={estudaEstudou} ></Select2>
-                        </div>
-                    
-                      
-                      <div className="row mt-3">
-                        <div className="col text-right actionButtons">
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => {setPag2(false)}}
-                          >
-                            Anterior
-                          </Button>
-
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            onClick={() => {setPag3(true); setPag2(false)}}
-                          >
-                            Proximo
-                          </Button>
-                        </div>
-                      </div>
-                      
-                    </form>
-                     </>)
-                    }
-
-
-
-                    {
-                      pag3 && (
-                        <>
-                      
-                         <p class="text-center h3  mb-3 mt-4">Oportunidades que te interessa...</p>
-                        <form >
-                     
-                      
-                      <div className="row mt-3">
-                        <div className="col text-left">
-                          <label htmlFor="turno_disponivel" className="form-label">
-                            Seu turno disponível 
-                          </label>
-                          <Select2 placeholder="Selecione uma opção" isMulti={false}  linesSelected ={turnoDisponivelSelected} 
-                          handleChangeLineSelect={handleTurnoDisponivelSelect} lines ={turnoDisponivel} ></Select2> 
-                        </div>
-                        <div className="col text-left">
-                          <label htmlFor="modalidade`" className="form-label">
-                           Modalidade
-                          </label>
-                            <Select2 placeholder="Selecione uma opção" linesSelected={modalidadeSelected}
-                             handleChangeLineSelect={handleModalidadeSelect} 
-                             lines ={modalidade} isMulti = {false} ></Select2>
-                        </div>
-                      </div>
-                      <div className="col text-left">
-                          <label htmlFor="disponibilidade" className="form-label">
-                           Tenho interesse em oportunidades que estejam...
-                          </label>
-                            <Select2 placeholder="Selecione uma opção" linesSelected={disponibilidadeSelected}
-                             handleChangeLineSelect={handleDisponibilidadeSelect} 
-                             lines ={disponibilidade} isMulti = {true} ></Select2>
-                        </div>
-                      <div className="row mt-3">
-                       
-                        <div className="col text-left">
-                          <label htmlFor="busca_oportunidade`" className="form-label">
-                           Busco uma oportunidade...
-                          </label>
-                            <Select2 placeholder="Selecione uma opção" linesSelected={buscaOportunidadeSelected}
-                             handleChangeLineSelect={handleBuscaOportunidadeSelect} 
-                             lines ={buscaOportunidade} isMulti = {true} ></Select2>
-                        </div>
-                     </div>
-                      <div className="row mt-3">
-                        <div className="col text-left">
-                          <label htmlFor="area_interesse" className="form-label">
-                            Área de interesse
-                          </label>
-                          <input
-                            id="area_interesse"
-                            value={area_interesse}
-                            placeholder="Ex: Psicologia, Letras, Exatas e Medicina"
-                            name="area_interesse"
-                            className="form-control"
-                            onChange={(e) => setArea_interesse(e.target.value)}
-                            type="text"
-                          />
-                        </div>
-                      </div>
-                      <div className="row mt-3">
-                        <div className="col text-left">
-                          <textarea onChange={e => handleDescricao(e.target.value)} className="form-control text_placeholder" placeholder="Ex: Gosto de estudar e meu hobby preferido é cozinhar  ">
-                          </textarea>
-                        </div>
-                      </div>
-
-                    
-                     
-                     
-                      
-                      <div className="row mt-3">
-                        <div className="col text-right actionButtons">
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => {setPag3(false); setPag2(true) }}
-                          >
-                            Anterior
-                          </Button>
-
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            onClick={() => {handlesubmit()}}
-                          >
-                            Cadastrar
-                          </Button>
-                        </div>
-                      </div>
-                     
-                    </form>
-                    </>  )
-                    }
-
-
-
-
-
-                  </div>
-                  <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-                    <img
-                      src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
-                      class="img-fluid"
-                      alt=""
+          <Oportunidades id_usuario = {id_usuario} matches={matches} setMatches = {setMatches} ></Oportunidades>
+        )
+      } */}
+    {
+      !pag2 && !pag3 && pag1 && (
+        <div className="container-registration">
+        <div className="container-logo">
+          <img  onClick={e => {
+            e.preventDefault();
+            window.location.href = "/";
+          }} src={image} alt="logo" className="logo" />
+        </div> 
+        <div className="container-message">
+          <h2>Preencha os campos abaixo</h2>
+          <h2>Queremos te conhecer melhor!</h2>
+        </div>
+  
+        <div className="container-formulario">
+          <div className="container-campos">
+            
+              
+                <div className="form-group">
+                    <label htmlFor="nome" >
+                      Nome
+                    </label>
+                    <input
+                        id="nome"
+                        name="nome"
+                        value= {nome}
+                        onChange={(e) => setNome(e.target.value)}
                     />
-                  </div>
                 </div>
-              </div>
-            </div>
+                <div className="form-group">
+                        <label htmlFor="sobrenome`" >
+                          Sobrenome
+                        </label>
+                        <input
+                          id="sobrenome"
+                          name="sobrenome"
+                          onChange={(e) => setSobrenome(e.target.value)}
+                          value={sobrenome}
+                          />
+                </div>
+              
+                  <div className="form-group">
+                 
+                      <label htmlFor="email" >
+                        Email
+                      </label>
+                      <input
+                        id="email"
+                        name="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        />
+                
+                  </div>
+                    <div  className="form-group" >
+                        <label htmlFor="genero">
+                          Gênero
+                        </label>
+                      
+                        <Select2  placeholder="Selecione um gênero" isMulti={false} lines = {genero} handleChangeLineSelect = {handleGeneroSelect}  linesSelected ={generoSelected }></Select2>
+                      
+                    </div>
+                    <div className="form-group">
+                   
+                        <label htmlFor="data_nascimento" >
+                          Data de nascimento
+                        </label>
+                        <input className="data"
+                          id="data_nascimento"
+                          value={data_nascimento}
+                          name="data_nascimento"
+                          onChange={(e) => setDataNascimento(e.target.value)}
+                          type="date"
+                        />
+                            
+                
+                    </div>
+                    
+                      <div className="form-group">
+                        <label htmlFor="renda_per_capita" >
+                          Renda per capita (em reais) <span  onClick={e =>  alert("Renda per capita é a divisão da renda total de uma família pelo número de pessoas que compõem essa família.")} className="saiba-mais" >?</span>
+                        </label>
+                        <input
+                          id="renda_per_capita"
+                          value={renda_per_capita}
+                          name="renda_per_capita"
+                          placeholder="2000"
+                          onChange={(e) => setRenda_per_capita(e.target.value)}
+                          type="number"
+                        />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="cep" >
+                        Seu cep
+                      </label>
+                      <input
+                        placeholder="Ex: 04086002"
+                        id="cep"
+                        value={cep}
+                        name="cep"
+                        onChange={(e) => setCep(e.target.value)}
+                        />
+                    </div>
+                  
+                  <div className="form-group">
+                    
+                      <button className="first-button"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          if (!validadorDeCampo(nome) || !validadorDeCampo(sobrenome) || !validadorDeCampo(email) || !validadorDeCampo(data_nascimento) || !validadorDeCampo(renda_per_capita) || !validadorDeCampo(cep) || generoSelected.length === 0) {
+                            alert("Preencha todos os campos")
+                          } else {
+                            if(!validarCEP(cep)){
+                              alert("Cep inválido. Um cep de 8 dígitos deve ser fornecido, exemplo: `01001000`")
+                            } else {
+  
+                            setPag2(true)
+                            setPag1(false)
+                            }
+                          }
+                        }}
+                        >
+                           Proximo
+                        </button>
+                   
+                  </div>
+           
           </div>
         </div>
-      </section>
-    </div>
-  );
+      </div>
+      )
+    }
 
+    {
+      pag2 && (
+        <div className="container-registration">
+        <div className="container-logo">
+          <img  onClick={e => {
+            e.preventDefault();
+            window.location.href = "/";
+          }} src={image} alt="logo" className="logo" />
+        </div> 
+        <div className="container-message">
+          <h2>Agora queremos saber informações </h2>
+          <h2>sobre sua escolaridade</h2>
+        </div>
+  
+        <div className="container-formulario">
+          <div className="container-campos">
+            
+              
+                <div className="form-group">
+                    <label htmlFor="escolaridade" className="escolaridade">
+                      Escolaridade
+                    </label>
+                    <Select2 placeholder="Selecione uma opção" isMulti={false}  linesSelected ={escolaridadeSelected} handleChangeLineSelect ={handleEscolaridadeSelect } lines ={escolaridade} ></Select2>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="ocupacao" className="form_label">
+                      Ocupação atualmente
+                    </label>
+                    <input
+                      id="ocupacao"
+                      name="ocupacao"
+                      value={ocupacao}
+                      className="form_control"
+                      onChange={(e) => setOcupacao(e.target.value)}
+                      placeholder="Ex: Estudante, Menor aprendiz, estagiário na área de TI, etc."
+                      type="ocupacao"
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="estuda_estudou" >
+                      Estuda/estudou
+                    </label>
+                    <Select2 placeholder="Selecione uma opção" isMulti={false}  linesSelected ={estudaEstudouSelected} handleChangeLineSelect ={handleEstudaEstudouSelect} lines ={estudaEstudou} ></Select2>
+                </div>
+              
+                <div className="form-group">
+                    <button className="btn-previous"
+                      onClick={() => {
+                        setPag2(false) 
+                        setPag1(true)} }
+                    >
+                      Anterior
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault()
+                        if (!validadorDeCampo(escolaridadeSelected) || !validadorDeCampo(ocupacao) || !validadorDeCampo(estudaEstudouSelected)) {
+                          alert("Preencha todos os campos")
+                        } else {
+                          
+                        
+                        setPag3(true); setPag2(false)}}
+                      }
+                    >
+                      Proximo
+                    </button>
+                </div>
+              
+
+          </div>
+        </div>
+      </div>
+      )
+    }
+
+    {
+      pag3 && (
+        <div className="container-registration">
+        <div className="container-logo">
+          <img  onClick={e => {
+            e.preventDefault();
+            window.location.href = "/";
+          }} src={image} alt="logo" className="logo" />
+        </div> 
+        <div className="container-message">
+          <h2>Agora vamos entender seus interesses</h2>
+          <p>Aqui, quanto mais detalhes tivermos, mais direcionadas serão as recomendações e oportunidades</p>
+        </div>
+  
+        <div className="container-formulario">
+          <div className="container-campos">
+            
+              
+                <div className="form-group">
+                    <label htmlFor="turno_disponivel" >
+                      Seu turno disponível 
+                    </label>
+                    <Select2 placeholder="Selecione uma ou mais opções" isMulti={true}  linesSelected ={turnoDisponivelSelected} 
+                    handleChangeLineSelect={handleTurnoDisponivelSelect} lines ={turnoDisponivel} ></Select2> 
+                </div>
+                <div  className="form-group">
+                    <label htmlFor="modalidade`" >
+                     Modalidade
+                    </label>
+                      <Select2 placeholder="Selecione uma ou mais opções" linesSelected={modalidadeSelected}
+                       handleChangeLineSelect={handleModalidadeSelect} 
+                       lines ={modalidade} isMulti = {true} ></Select2>
+                </div>
+                <div  className="form-group">
+                    <label className="label-patinho-feio" htmlFor="disponibilidade" >
+                     Tenho interesse em oportunidades que estejam...
+                    </label>
+                      <Select2 placeholder="Selecione uma ou mais opções" linesSelected={disponibilidadeSelected}
+                       handleChangeLineSelect={handleDisponibilidadeSelect} 
+                       lines ={disponibilidade} isMulti = {true} ></Select2>
+                </div>
+                <div  className="form-group" >
+                    <label htmlFor="busca_oportunidade`" >
+                     Busco uma oportunidade...
+                    </label>
+                      <Select2 placeholder="Selecione uma ou mais opções" linesSelected={buscaOportunidadeSelected}
+                       handleChangeLineSelect={handleBuscaOportunidadeSelect} 
+                       lines ={buscaOportunidade} isMulti = {true} ></Select2>
+                </div>
+                <div  className="form-group">
+                    <label htmlFor="area_interesse" >
+                      Área de interesse
+                    </label>
+                    <input
+                      id="area_interesse"
+                      value={area_interesse}
+                      placeholder="Ex: Psicologia, Letras, Exatas e Medicina"
+                      name="area_interesse"
+                      className="form_control"
+                      onChange={(e) => setArea_interesse(e.target.value)}
+                      type="text"
+                    />
+                </div>
+                <div  className="form-group" >
+                  <label>
+                    Descrição
+                  </label>
+                  <div  className="text-area">
+                    <textarea onChange={e => handleDescricao(e.target.value)} placeholder="Insira aqui informações sobre o que você gosta e sobre o que almeja para o seu futuro. quanto mais informações, melhor">
+                    </textarea>
+                  </div>
+                </div>
+                <div  className="form-group">
+               
+                    <button className="btn-previous "
+                      onClick={(e) => {
+                        e.preventDefault()
+                        setPag3(false); setPag2(true) }}
+                    >
+                      Anterior
+                    </button>
+                   <button  className="btn-cadastrar" onClick={(e) => handlesubmitForm(e)} >Cadastrar</button> 
+                 
+                
+                </div>
+          </div>
+        </div>
+      </div>
+
+      
+
+      )
+    }
+    {
+      recomendacao &&(
+        <LoadingSpinner mensagem = "Aguarde enquanto fazemos o match..." ></LoadingSpinner>
+      )
+    }
+ 
+    </>
+  )
+    
+    
 }
+
 export default Registration;

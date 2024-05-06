@@ -4,7 +4,7 @@ import Select from 'react-select';
 const Select2 = (props) => {
    
   return (
-    <Select
+    <Select 
         isMulti = {props.isMulti}
         value={props.linesSelected}
         onChange={props.handleChangeLineSelect}
@@ -12,17 +12,16 @@ const Select2 = (props) => {
         options={ props.lines.map(item => {
             return {value: item, label : item }
         }) }
-        hideSelectedOptions={false}
+        hideSelectedOptions={true}
         isSearchable = {false}
         placeholder= {props.placeholder}
         styles={{
-        menu: (provided, state) => ({
-            ...provided,
-            
-            zIndex: 1, 
-            maxWidth: '400px',
-        
-        }),
+            width: '100%',
+            placeholder: (base) => ({
+                ...base,
+                
+                fontSize: '14px'
+            }),
 }}
 />
 )
